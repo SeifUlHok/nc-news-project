@@ -32,6 +32,7 @@ describe("GET /api/topics", () => {
       .expect(200)
       .then(({ body: { topics } }) => {
         expect(Array.isArray(topics)).toBe(true)
+        expect(topics.length).toBeGreaterThan(0)
         topics.forEach(function (topic) {
           expect(Array.isArray(topic)).toEqual(false)
           expect(typeof topic).toEqual('object')
@@ -44,11 +45,56 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body: { topics } }) => {
+        expect(topics.length).toBeGreaterThan(0)
         topics.forEach(function (topic) {
           expect(topic).toHaveProperty("slug")
           expect(topic).toHaveProperty("description")
         })
       });
+  });
+
+});
+
+
+describe("GET /api/articles/:article_id", () => {
+  test("200: return object with correct properties and ID", () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then(({body}) =>{
+      const {article_id} = body;
+      expect(typeof body).toBe('object')
+      expect(Array.isArray(body)).toBe(false)
+      expect(body).toHaveProperty("author")
+      expect(body).toHaveProperty("title")
+      expect(body).toHaveProperty("article_id")
+      expect(body).toHaveProperty('body')
+      expect(body).toHaveProperty('topic')
+      expect(body).toHaveProperty('created_at')
+      expect(body).toHaveProperty('votes')
+      expect(body).toHaveProperty('article_img_url')
+      expect(article_id).toEqual(1)
+    })
+  });
+
+  test("400: return 'invalid id' message when requesting an id that is not in the database", () => {
+    return request(app)
+    .get("/api/articles/999")
+    .expect(400)
+    .then(({body}) =>{
+      const {msg} = body;
+      expect(msg).toBe('invalid id')
+    })
+  });
+
+  test("404: return 'bad request' message when requesting with an invalid input type", () => {
+    return request(app)
+    .get("/api/articles/asd")
+    .expect(404)
+    .then(({body}) =>{
+      const {msg} = body;
+      expect(msg).toBe('bad request')
+    })
   });
 
 });

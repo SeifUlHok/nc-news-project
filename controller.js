@@ -1,15 +1,21 @@
-
 const endpointsJson = require("./endpoints.json");
-const topicsJson = require("./db/data/development-data/topics");
-const {getAllTopicsData} = require("./models")
+const {getAllTopicsData, getArticleDataById} = require("./models")
 
 function getEndpoints(req, res, next){
     res.status(200).send({endpoints: endpointsJson});
 }
 
 function getAllTopics(req, res, next){
-    getAllTopicsData().then((rows) =>{
-        res.status(200).send({topics:rows})
+    getAllTopicsData().then((topicsData) =>{
+        res.status(200).send({topics:topicsData})
     });
 }
-module.exports = {getEndpoints, getAllTopics};
+
+function getArticleById(req, res, next){
+    const {params} = req;
+    getArticleDataById(params).then((article)=>{
+        res.status(200).send(article[0])
+    })
+    .catch(next);
+}
+module.exports = {getEndpoints, getAllTopics, getArticleById};
