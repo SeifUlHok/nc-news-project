@@ -1,5 +1,5 @@
 const endpointsJson = require("./endpoints.json");
-const {getAllTopicsData, getArticleDataById} = require("./models")
+const {getAllTopicsData, getArticleDataById, getAllArticlesData} = require("./models")
 
 function getEndpoints(req, res, next){
     res.status(200).send({endpoints: endpointsJson});
@@ -18,4 +18,10 @@ function getArticleById(req, res, next){
     })
     .catch(next);
 }
-module.exports = {getEndpoints, getAllTopics, getArticleById};
+
+function getAllArticles(req, res, next){
+    getAllArticlesData().then((articleData) =>{
+        res.status(200).send({articles:articleData})
+    })
+}
+module.exports = {getEndpoints, getAllTopics, getArticleById, getAllArticles};
