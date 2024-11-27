@@ -1,5 +1,4 @@
 const db = require("./db/connection");
-const articles = require("./db/data/test-data/articles");
 
 function getAllTopicsData() {
     return db.query("SELECT * FROM topics")
@@ -11,12 +10,12 @@ function getAllTopicsData() {
 function getArticleDataById(params){
     const {article_id} = params;
 
-    return db.query(`SELECT * FROM articles WHERE article_id = ${article_id}`)
+    return db.query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
     .then(({rows}) => {
         if(rows.length === 0){
-            return Promise.reject({status:  400, msg: "invalid id"})
+            return Promise.reject({status:  404, msg: "Article does not exist"})
         }
-        return rows;
+        return rows[0];
     }).catch((err)=>{
         return Promise.reject(err)
     });
@@ -35,5 +34,18 @@ function getAllArticlesData(){
     });
 }
 
+function getCommentData(params){
+    const {article_id} = params;
 
-module.exports = {getAllTopicsData, getArticleDataById, getAllArticlesData};
+    return db.query("SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC", [article_id])
+    .then(({rows}) => {
+        if(rows.length === 0){
+            return Promise.reject({status:  404, msg: "Article does not exist"})
+        }
+        return rows;
+    }).catch((err) =>{
+        return Promise.reject(err)
+    });
+}
+
+module.exports = {getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData};
