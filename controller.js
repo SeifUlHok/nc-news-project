@@ -1,5 +1,5 @@
 const endpointsJson = require("./endpoints.json");
-const {getAllTopicsData, getArticleDataById, getAllArticlesData} = require("./models")
+const {getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData} = require("./models")
 
 function getEndpoints(req, res, next){
     res.status(200).send({endpoints: endpointsJson});
@@ -14,14 +14,21 @@ function getAllTopics(req, res, next){
 function getArticleById(req, res, next){
     const {params} = req;
     getArticleDataById(params).then((article)=>{
-        res.status(200).send(article[0])
+        res.status(200).send(article)
     })
     .catch(next);
 }
 
 function getAllArticles(req, res, next){
-    getAllArticlesData().then((articleData) =>{
-        res.status(200).send({articles:articleData})
+    getAllArticlesData().then((articlesData) =>{
+        res.status(200).send({articles:articlesData})
     })
 }
-module.exports = {getEndpoints, getAllTopics, getArticleById, getAllArticles};
+
+function getCommentsByArticle(req, res, next){
+    const {params} = req;
+    getCommentData(params).then((result) =>{
+        res.status(200).send({comments:result})
+    }).catch(next);
+}
+module.exports = {getEndpoints, getAllTopics, getArticleById, getAllArticles, getCommentsByArticle};

@@ -73,24 +73,24 @@ describe("GET /api/articles/:article_id", () => {
         expect(body).toHaveProperty('created_at')
         expect(body).toHaveProperty('votes')
         expect(body).toHaveProperty('article_img_url')
-        expect(article_id).toEqual(1)
+        expect(article_id).toBe(1)
       })
   });
 
-  test("400: return 'invalid id' message when requesting an id that is not in the database", () => {
+  test("400: return 'Article does not exist' message when requesting an id that is not in the database", () => {
     return request(app)
       .get("/api/articles/999")
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         const { msg } = body;
-        expect(msg).toBe('invalid id')
+        expect(msg).toBe('Article does not exist')
       })
   });
 
   test("404: return 'bad request' message when requesting with an invalid input type", () => {
     return request(app)
       .get("/api/articles/asd")
-      .expect(404)
+      .expect(400)
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe('bad request')
@@ -132,5 +132,54 @@ describe("GET /api/articles", () => {
         sortedArticles.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
         expect(articles).toEqual(sortedArticles);
       })
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: return array of comments with correct article_id and properties", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual(expect.objectContaining([
+          {
+            comment_id: 1,
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            article_id: 9,
+            author: 'butter_bridge',
+            votes: 16,
+            created_at: '2020-04-06T12:17:00.000Z'
+          },
+          {
+            comment_id: 17,
+            body: 'The owls are not what they seem.',
+            article_id: 9,
+            author: 'icellusedkars',
+            votes: 20,
+            created_at: '2020-03-14T17:02:00.000Z'
+          }
+        ]));
+      });
+  });
+
+  test("404: return 'Article does not exist' when requesting an Id that is not in the database", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe('Article does not exist')
+      });
+  });
+
+  test("200: objects in returned Array are ordered by most recent", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body : {comments} }) => {
+        const sortedCommentsCopy = [...comments];  
+        sortedCommentsCopy.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+        expect(comments).toEqual(sortedCommentsCopy);
+      });
   });
 });
