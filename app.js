@@ -12,6 +12,7 @@ app.get('/api/articles', getAllArticles)
 
 app.get('/api/articles/:article_id/comments', getCommentsByArticle)
 
+
 app.use( (err, req , res , next)=>{
 
     if (err.msg && err.status){

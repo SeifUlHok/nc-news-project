@@ -31,4 +31,5 @@ function getCommentsByArticle(req, res, next){
         res.status(200).send({comments:result})
     }).catch(next);
 }
+
 module.exports = {getEndpoints, getAllTopics, getArticleById, getAllArticles, getCommentsByArticle};
