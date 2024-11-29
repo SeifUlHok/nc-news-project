@@ -128,8 +128,8 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body: { articles } }) => {
-        const sortedArticles = [...articles];  
-        sortedArticles.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+        const sortedArticles = [...articles];
+        sortedArticles.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         expect(articles).toEqual(sortedArticles);
       })
   });
@@ -176,11 +176,61 @@ describe("GET /api/articles/:article_id/comments", () => {
     return request(app)
       .get("/api/articles/1/comments")
       .expect(200)
-      .then(({ body : {comments} }) => {
-        const sortedCommentsCopy = [...comments];  
-        sortedCommentsCopy.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+      .then(({ body: { comments } }) => {
+        const sortedCommentsCopy = [...comments];
+        sortedCommentsCopy.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         expect(comments).toEqual(sortedCommentsCopy);
       });
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: inserts and returns comment for existing user", () => {
+    const newComment = {
+      username: 'icellusedkars',
+      body: "example comment",
+    }
+    return request(app)
+      .post("/api/articles/9/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: newComment.body,
+            article_id: 9,
+            author: newComment.username,
+            votes: 0,
+            created_at: expect.any(String)
+          })
+        );
+      });
+
+  });
+
+  test("201: inserts and returns comment for non existing user", () => {
+    const newComment = {
+      username: 'NEW USER1',
+      body: "example comment 2",
+    }
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        expect(body).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: newComment.body,
+            article_id: 2,
+            author: newComment.username,
+            votes: 0,
+            created_at: expect.any(String)
+          })
+        );
+      });
+
+  });
+
+});
