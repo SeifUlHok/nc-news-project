@@ -85,7 +85,10 @@ function addComment(comment, article_id){
     });
 }
 
-module.exports = {getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment};
+function updateVotes(votes,id){
+    return db.query(`UPDATE articles SET votes = votes +$1 WHERE article_id =$2 RETURNING *;`,[votes,id])
+}
+module.exports = {getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment, updateVotes};
 
 
 

@@ -234,3 +234,45 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 
 });
+
+describe('PATCH /api/articles/:article_id', ()=>{
+  test('should return the article', () => {
+    return request(app).patch('/api/articles/1')
+    .send({inc_votes:0}).expect(200).then(({body})=>{
+      expect(body.article_id).toEqual(1)
+      expect(body.author ).toEqual('butter_bridge')
+      expect(body.title ).toEqual("Living in the shadow of a great man")
+      expect(body.topic ).toEqual("mitch")
+      expect(body.body).toEqual("I find this existence challenging")
+      expect(body.votes ).toEqual(100)
+      expect(body.created_at ).toEqual( "2020-07-09T20:11:00.000Z" )
+    })
+  });
+
+  test('should increase the articles votes by specified amount', () => {
+    return request(app).patch('/api/articles/2')
+    .send({inc_votes:33}).expect(200).then(({body})=>{
+      expect(body.votes).toEqual(33)
+    })
+  });
+
+  test('should decrease the articles votes by specified amount', () => {
+    return request(app).patch('/api/articles/1')
+    .send({inc_votes:-10}).expect(200).then(({body})=>{
+      expect(body.votes).toEqual(90)
+    })
+  });
+
+  test('status 400 bad request when invalid value for inc_votes', () => {
+    return request(app).patch('/api/articles/2')
+    .send({inc_votes:'asdasd'}).expect(400).then(({body})=>{
+      expect(body.msg).toBe('bad request')
+    })
+  });
+
+  test("status 404 for non existent article", () => {
+    return request(app).patch('/api/articles/999').send({inc_votes:10}).expect(404).then(({body})=>{
+      expect(body.msg).toBe('Article does not exist')
+    })
+  });
+});
