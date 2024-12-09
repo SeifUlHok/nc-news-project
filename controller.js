@@ -1,5 +1,5 @@
 const endpointsJson = require("./endpoints.json");
-const { getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment, updateVotes } = require("./models")
+const { getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment, updateVotes, deleteCommentSql } = require("./models")
 
 function getEndpoints(req, res, next) {
     res.status(200).send({ endpoints: endpointsJson });
@@ -47,4 +47,11 @@ function patchArticle(req, res, next) {
         getArticleById(req, res, next);
     }).catch(next)
 }
-module.exports = { getEndpoints, getAllTopics, getArticleById, getAllArticles, getCommentsByArticle, postCommentByArticle, patchArticle };
+
+function deleteComment(req, res, next){
+    const comment_id=req.params.comment_id
+    deleteCommentSql(comment_id).then((rows)=>{
+        res.sendStatus(204)
+    }).catch(next)
+}
+module.exports = { getEndpoints, getAllTopics, getArticleById, getAllArticles, getCommentsByArticle, postCommentByArticle, patchArticle, deleteComment };
