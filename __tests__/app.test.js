@@ -276,3 +276,26 @@ describe('PATCH /api/articles/:article_id', ()=>{
     })
   });
 });
+
+describe('DELETE /api/comments/:comment_id',()=>{
+  test('status 204, no content returned', () => {
+    return request(app).delete('/api/comments/1').expect(204)
+  });
+  test('should delete comment with corresponsing id', () => {
+    return request(app).delete('/api/comments/10').expect(204).then(({body})=>{
+      return request(app).get('/api/articles/3/comments').expect(200).then(({body})=>{
+        expect(body.comments.length).toBe(1)
+      })
+    })
+  });
+  test('400 for invalid id', () => {
+    return request(app).delete('/api/comments/fgfd').expect(400).then(({body})=>{
+      expect(body.msg).toBe('bad request')
+    })
+  });
+  test('404 for valid but non existent id', () => {
+    return request(app).delete('/api/comments/200000').expect(404).then(({body})=>{
+      expect(body.msg).toBe('comment not found')
+    })
+  });
+})
