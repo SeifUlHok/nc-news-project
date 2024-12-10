@@ -20,9 +20,18 @@ function getArticleById(req, res, next) {
 }
 
 function getAllArticles(req, res, next) {
-    getAllArticlesData().then((articlesData) => {
-        res.status(200).send({ articles: articlesData })
-    })
+    const sort_by = req.query.sort_by || 'created_at';
+    const order= req.query.order || 'desc';
+
+    if(!['asc','desc'].includes(order)){
+        res.status(400).send({msg:'bad request',details:'invalid order query'})
+    } else if(!['title','created_at','votes','article_id','comment_count','body','author','topic'].includes(sort_by)){
+        res.status(400).send({msg:'bad request',details:'invalid sort_by query'})
+    }  else {
+        getAllArticlesData(sort_by, order).then((articlesData) => {
+            res.status(200).send({ articles: articlesData })
+        })
+    }
 }
 
 function getCommentsByArticle(req, res, next) {

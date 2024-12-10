@@ -20,18 +20,20 @@ function getArticleDataById(params){
     })
 }
 
-function getAllArticlesData(){
+function getAllArticlesData(sort_by='created_at', order='desc'){
+
     return db.query(`
         SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url, COUNT(c.comment_id) AS comment_count
         FROM articles a
         LEFT JOIN comments c ON a.article_id = c.article_id
         GROUP BY a.article_id
-        ORDER BY a.created_at DESC;
+        ORDER BY ${sort_by} ${order};
     `)
     .then(({rows}) => {
         return rows;
     });
 }
+
 
 function getCommentData(params){
     const {article_id} = params;
