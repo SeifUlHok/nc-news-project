@@ -94,7 +94,16 @@ function deleteCommentSql(comment_id){
         }
     })
 };
-module.exports = {getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment, updateVotes, deleteCommentSql};
+
+function selectUsers(){
+    return db.query('SELECT * FROM users;').then(({rows}) =>{
+        if(rows.length === 0){
+            return Promise.reject({status:  404, msg:'users not found'})
+        }
+        return rows;
+    })
+}
+module.exports = { selectUsers, getAllTopicsData, getArticleDataById, getAllArticlesData, getCommentData, addComment, updateVotes, deleteCommentSql};
 
 
 
