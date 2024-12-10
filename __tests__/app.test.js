@@ -299,3 +299,24 @@ describe('DELETE /api/comments/:comment_id',()=>{
     })
   });
 })
+
+describe('GET /api/users',()=>{
+  test('200: respond with an array of correct size', () => {
+    return request(app).get('/api/users').expect(200).then(({body})=>{
+      expect(body.users).toBeInstanceOf(Array)
+      expect(body.users.length).toBe(4)
+    })
+  });
+  test('200: should respond with object of users', () => {
+    return request(app).get('/api/users').expect(200).then(({body})=>{
+      const user1 = body.users[0]
+      const expected = {
+        username: 'butter_bridge',
+        name: 'jonny',
+        avatar_url:
+          'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+      }
+      expect(user1).toMatchObject(expected)
+    })
+  });
+})
