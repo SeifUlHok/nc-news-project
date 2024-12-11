@@ -11,7 +11,7 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": [ "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
@@ -64,6 +64,52 @@
           "author": "icellusedkars",
           "votes": 20,
           "created_at": "2020-03-14T17:02:00.000Z"
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to the requested article",
+    "exampleRequest": {"username":"butter_bridge","body": "example comment"},
+    "exampleResponse": {
+      "new_comment": {
+        "comment_id": 23,
+        "body": "example comment",
+        "article_id": 1,
+        "author": "bob",
+        "votes": 0,
+        "created_at": "2024-12-11T12:06:03.090Z"
+      }
+    }
+  },
+  "PATCH /api/articles/article_id": {
+    "description": "change votes of chosen article",
+    "exampleRequest": {"inc_votes":23},
+    "exampleResponse": {
+      "article": 
+      {
+        "title": "Eight pug gifs that remind me of mitch",
+        "comment_count": 2,
+        "article_id": 3,
+        "topic": "mitch",
+        "author": "sam",
+        "body": "some gifs",
+        "created_at": "2020-11-03T09:12:00.000Z",
+        "votes": 23
+      }
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment with corresponding comment_id"
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
     }

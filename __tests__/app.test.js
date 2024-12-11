@@ -411,3 +411,21 @@ describe('GET /api/articles topics filter query',()=>{
     })
   });
 })
+
+describe('GET/api/articles/:article_id now includes comment count',()=>{
+  test('200 article should now include comment count property', () => {
+    return request(app).get('/api/articles/1').expect(200).then(({body})=>{
+      expect(body).toHaveProperty("comment_count")
+    })
+  });
+  test('200: comment_count hold correct amount for article 1', () => {
+    return request(app).get('/api/articles/1').expect(200).then(({body})=>{
+      expect(body.comment_count).toEqual('11')
+    })
+  });
+  test('200:comment_count hold correct amount for article 2', () => {
+    return request(app).get('/api/articles/2').expect(200).then(({body})=>{
+      expect(body.comment_count).toEqual('0')
+    })
+  });
+})
