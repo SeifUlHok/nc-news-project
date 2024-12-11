@@ -20,17 +20,25 @@ function getArticleDataById(params){
     })
 }
 
-function getAllArticlesData(sort_by='created_at', order='desc'){
-
-    return db.query(`
+function getAllArticlesData(sort_by='created_at', order='desc', topic){
+    let query = `
         SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url, COUNT(c.comment_id) AS comment_count
         FROM articles a
         LEFT JOIN comments c ON a.article_id = c.article_id
-        GROUP BY a.article_id
-        ORDER BY ${sort_by} ${order};
-    `)
-    .then(({rows}) => {
-        return rows;
+    `;
+
+    if (topic) {
+        query += ` WHERE a.topic = $1`;
+    }
+
+    query += ` GROUP BY a.article_id ORDER BY ${sort_by} ${order};`;
+
+    return db.query(query, topic ? [topic] : [])
+        .then(({ rows }) => {
+            if(rows.length === 0){
+                return Promise.reject({status:  404, msg: "Article does not exist"})
+            }
+            return rows;
     });
 }
 
