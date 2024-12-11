@@ -387,3 +387,27 @@ describe('GET /api/articles (sort by queries)',()=>{
       })
     });
 })
+
+describe('GET /api/articles topics filter query',()=>{
+  test('should filter results using topic query, topic = mitch', () => {
+    return request(app).get('/api/articles?topic=mitch&limit=50000').expect(200).then(({body})=>{
+      body.articles.forEach(article=>{
+        expect(article.topic).toBe('mitch')
+      })
+      expect(body.articles.length).toBe(12)
+    })
+  });
+  test('Should filter for articles with topic "cat"', () => {
+    return request(app).get('/api/articles?topic=cats').expect(200).then(({body})=>{
+      body.articles.forEach(article=>{
+        expect(article.topic).toBe('cats')
+      })
+      expect(body.articles.length).toBe(1)
+    })
+  });
+  test('should return article not found message when given a topic with no articles', () => {
+    return request(app).get('/api/articles?topic=paper').expect(404).then(({body})=>{
+      expect(body.msg).toBe('Article does not exist')
+    })
+  });
+})
