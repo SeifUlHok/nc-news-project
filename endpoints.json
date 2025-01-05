@@ -102,7 +102,7 @@
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment with corresponding comment_id"
   },
-  "GET /api/users": {
+  "GET /api/users ": {
     "description": "serves an array of all users",
     "exampleResponse": {
       "users": [

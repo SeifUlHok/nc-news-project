@@ -37,11 +37,22 @@ function getAllArticles(req, res, next) {
 
 function getCommentsByArticle(req, res, next) {
     const { params } = req;
-    getCommentData(params).then((result) => {
-        res.status(200).send({ comments: result })
-    }).catch(next);
-}
+    const { article_id } = params;
 
+    getArticleDataById(params) 
+        .then(() => {
+            getCommentData(params).then((comments) => {
+                res.status(200).send({ comments: comments || [] });
+            });
+        })
+        .catch((error) => {
+            if (error.status === 404) {
+                res.status(404).send({ msg: "Article does not exist" });
+            } else {
+                next(error); 
+            }
+        });
+}
 function postCommentByArticle(req, res) {
     const comment = req.body;
     const { article_id } = req.params
