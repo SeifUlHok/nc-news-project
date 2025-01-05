@@ -45,13 +45,7 @@ function getCommentsByArticle(req, res, next) {
                 res.status(200).send({ comments: comments || [] });
             });
         })
-        .catch((error) => {
-            if (error.status === 404) {
-                res.status(404).send({ msg: "Article does not exist" });
-            } else {
-                next(error); 
-            }
-        });
+        .catch(next)
 }
 function postCommentByArticle(req, res) {
     const comment = req.body;
