@@ -164,7 +164,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
   test("200: return empty array when no comments for article", () => {
     return request(app)
-      .get("/api/articles/37/comments")
+      .get("/api/articles/7/comments")
       .expect(200)
       .then(({ body}) => {
         expect(body).toEqual({comments:[]})
