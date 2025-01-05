@@ -162,11 +162,12 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("200: return empty array when no comments for article", () => {
+  test.only("200: return empty array when no comments for article", () => {
     return request(app)
       .get("/api/articles/37/comments")
       .expect(200)
       .then(({ body: { comments } }) => {
+        console.log(comments)
         expect(comments).toEqual(expect.objectContaining([]));
       });
   });
