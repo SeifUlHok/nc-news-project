@@ -162,13 +162,12 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("404: return 'Article does not exist' when requesting an Id that is not in the database", () => {
+  test("200: return empty array when no comments for article", () => {
     return request(app)
-      .get("/api/articles/999/comments")
-      .expect(404)
-      .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe('Article does not exist')
+      .get("/api/articles/37/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toEqual(expect.objectContaining([]));
       });
   });
 
