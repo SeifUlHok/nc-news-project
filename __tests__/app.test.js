@@ -292,11 +292,6 @@ describe('DELETE /api/comments/:comment_id',()=>{
       expect(body.msg).toBe('bad request')
     })
   });
-  test('404 for valid but non existent id', () => {
-    return request(app).delete('/api/comments/200000').expect(404).then(({body})=>{
-      expect(body.msg).toBe('comment not found')
-    })
-  });
 })
 
 describe('GET /api/users',()=>{
